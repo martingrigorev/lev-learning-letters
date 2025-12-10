@@ -52,7 +52,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ color, icon, onClick, lab
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`relative h-12 sm:h-14 flex-1 flex items-center justify-center font-bold text-white rounded shadow-sm select-none border-b-4 transition-all ${colorClasses}`}
+      className={`relative h-10 sm:h-12 flex-1 flex items-center justify-center font-bold text-white rounded shadow-sm select-none border-b-4 transition-all ${colorClasses}`}
     >
       {icon}
       {label && <span className="ml-2 text-xs sm:text-base">{label}</span>}
@@ -66,7 +66,7 @@ function KeyboardArea({ children }: { children: React.ReactNode }) {
     data: { type: 'keyboard-area' }
   });
   return (
-    <div ref={setNodeRef} className="flex-none bg-neutral-900 rounded-xl p-4 shadow-2xl border border-neutral-700">
+    <div ref={setNodeRef} className="flex-none bg-neutral-900 sm:rounded-xl p-1 sm:p-4 shadow-2xl border-t border-neutral-700 w-full z-10">
       {children}
     </div>
   );
@@ -293,19 +293,19 @@ export default function App() {
       onDragEnd={handleDragEnd}
       autoScroll={false} 
     >
-      <div className="min-h-screen bg-neutral-800 flex flex-col items-center py-4 font-sans select-none overflow-hidden">
+      <div className="h-[100dvh] w-full bg-neutral-800 flex flex-col items-center overflow-hidden touch-none">
         
-        <div className="w-full max-w-[95vw] lg:max-w-6xl flex flex-col gap-6 h-full flex-1">
+        <div className="w-full h-full sm:max-w-6xl flex flex-col p-1 sm:p-2 gap-1 sm:gap-2">
           
           {/* TOOLBAR */}
-          <div className="flex w-full gap-4 px-1">
+          <div className="flex w-full gap-2 shrink-0">
             <ToolbarButton 
               color="red" 
               onClick={handleUndo} 
               disabled={history.length === 0}
               label="Назад"
               icon={
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
                 </svg>
               }
@@ -315,7 +315,7 @@ export default function App() {
               onClick={handleClear}
               label="Очистить"
               icon={
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                 </svg>
               }
@@ -325,7 +325,7 @@ export default function App() {
               onClick={handleSpeakAll}
               label="Произнести"
               icon={
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
                 </svg>
               }
@@ -333,10 +333,17 @@ export default function App() {
           </div>
 
           {/* TOP AREA: Grid */}
-          <div className="flex-1 bg-neutral-900 rounded-xl p-2 sm:p-4 shadow-2xl border border-neutral-700 flex flex-col justify-center relative">
+          <div className="flex-1 min-h-0 bg-neutral-900 sm:rounded-xl p-1 shadow-2xl border-y sm:border border-neutral-700 flex flex-col justify-center relative">
             <div 
-              className="grid w-full mx-auto"
-              style={gridStyle}
+              className="grid mx-auto"
+              style={{
+                ...gridStyle,
+                aspectRatio: `${GRID_COLS}/${GRID_ROWS}`,
+                width: '100%',
+                maxWidth: '100%',
+                maxHeight: '100%',
+                height: 'auto'
+              }}
             >
               {Array.from({ length: TOTAL_CELLS }).map((_, index) => {
                 const item = gridState[index];
