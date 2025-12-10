@@ -1,3 +1,21 @@
+// Helper to manage voices state
+let voices: SpeechSynthesisVoice[] = [];
+
+export const initVoices = () => {
+  if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
+  const load = () => {
+    voices = window.speechSynthesis.getVoices();
+  };
+
+  load();
+  
+  // Chrome/Android loads voices asynchronously
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = load;
+  }
+};
+
 export const playSound = (type: 'grab' | 'drop' | 'rustle') => {
   // Safe check for SSR or environments without AudioContext
   const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
@@ -67,10 +85,19 @@ export const speakText = (text: string) => {
   const utterance = new SpeechSynthesisUtterance(text.toLowerCase());
   utterance.lang = 'ru-RU';
   utterance.rate = 0.9; // Slightly slower for clarity
-  
-  // Try to explicitly pick a Russian voice if available to ensure correct accent
-  const voices = window.speechSynthesis.getVoices();
-  const ruVoice = voices.find(v => v.lang === 'ru-RU' || v.lang.startsWith('ru'));
+  utterance.volume = 1.0; // Ensure max volume
+
+  // Ensure voices are loaded if array is empty
+  if (voices.length === 0) {
+    voices = window.speechSynthesis.getVoices();
+  }
+
+  // Try to find a Russian voice
+  // Priority: Google Russian -> Any ru-RU -> Any ru
+  const ruVoice = voices.find(v => v.name.includes('Google') && v.lang.includes('ru')) 
+               || voices.find(v => v.lang === 'ru-RU') 
+               || voices.find(v => v.lang.startsWith('ru'));
+               
   if (ruVoice) {
     utterance.voice = ruVoice;
   }
