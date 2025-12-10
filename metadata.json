@@ -1,0 +1,5 @@
+{
+  "name": "Copy of LEV-LETTERS",
+  "description": "A responsive React application featuring a 20x8 grid and a draggable Russian keyboard. Users can drag letters to the grid to compose words.",
+  "requestFramePermissions": []
+}
